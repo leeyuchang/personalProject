@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.ItemMapper">
+	<resultMap
+		type="org.zerock.vo.ItemVO"
+		id="itemMapper">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="price" property="price" />
+		<result column="price_tex" property="priceTex" />
+		<result column="type" property="type" />
+		<result column="category_id" property="categoryId" />
+	</resultMap>
+	<select
+		id="selectAll"
+		resultMap="itemMapper">
+		select * from tbl_item
+	</select>
+</mapper>

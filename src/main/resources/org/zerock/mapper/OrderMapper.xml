@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.OrderMapper">
+
+	<resultMap
+		type="org.zerock.vo.OrderVO"
+		id="OrderVOMap">
+		<result
+			property="id"
+			column="id" />
+		<result
+			property="quantity"
+			column="quantity" />
+		<result
+			property="itemId"
+			column="item_id" />
+		<result
+			property="customerId"
+			column="customer_id" />
+	</resultMap>
+
+	<select
+		id="selectById"
+		resultMap="OrderVOMap">
+		select id, quantity, item_id, customer_id from tbl_order where id=#{id}
+	</select>
+
+	<insert id="insert" parameterType="org.zerock.vo.OrderVO">
+	   <selectKey keyProperty="id" order="BEFORE" resultType="long">
+	       select nextval('seq_order')
+	   </selectKey>
+		insert into tbl_order(id, quantity, item_id, customer_id) values(#{id}, #{quantity}, #{itemId}, #{customerId})
+	</insert>
+
+
+</mapper>
