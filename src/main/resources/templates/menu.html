@@ -17,7 +17,7 @@
 		<br />
 		<label for="phone">
 			電話番号：<input type="tel" id="phone" />
-		</label>	
+		</label>
 	</div>
 	<br />
 
@@ -43,85 +43,87 @@
 	<h3>
 		総合計：<span id="totalPrice">0</span>
 	</h3>
-	
+
 	<button type="button" id="orderBtn">注文する</button>
 
 	<script th:inline="javascript">
 
-		let result = '[[${result}]]';
+		document.addEventListener('DOMContentLoaded', function (e) {
 
-		if (result !== 'null' && result.length > 0) {
-			confirm(result);
-		}
+			let result = '[[${result}]]';
 
-		let tbl = document.getElementById('tbl');
-		let form = document.createElement("form");
-		let html = '';
+			if (result !== 'null' && result.length > 0) {
+				confirm(result);
+			}
 
-		tbl.addEventListener('change', function (e) {
-			if (e.target.nodeName === 'INPUT') {
-				let inputArr = [];
-				let inputs = document.getElementsByTagName('input');
+			let tbl = document.getElementById('tbl');
+			let html = '';
 
-				for (input of inputs) {
-					if (input.value > 0) {
-						inputArr.push(input);
-					}
-				}
+			tbl.addEventListener('change', function (e) {
+				if (e.target.nodeName === 'INPUT') {
+					let inputArr = [];
+					let inputs = document.querySelectorAll('#tbl input');
 
-				let total = 0;
-				let tdArr = [];
-				html = '';
-
-				for (let idx = 0; idx < inputArr.length; idx++) {
-					let input = inputArr[idx];
-					let tr = input.parentNode.closest('tr');
-					let tds = tr.childNodes;
-
-					for (td of tds) {
-						if (td.nodeType === Node.ELEMENT_NODE) {
-							tdArr.push(td.dataset);
+					for (input of inputs) {
+						if (input.value > 0) {
+							inputArr.push(input);
 						}
 					}
 
-					let merged = Object.assign({}, ...tdArr);
+					let total = 0;
+					let tdArr = [];
+					html = '';
 
-					let itemId = merged.id;
-					let price = merged.price;
-					let quantity = input.value;
-					total += price * quantity;
-					document.getElementById('totalPrice').textContent = total;
+					for (let idx = 0; idx < inputArr.length; idx++) {
+						let input = inputArr[idx];
+						let tr = input.parentNode.closest('tr');
+						let tds = tr.childNodes;
 
-					html +=
-						`
+						for (td of tds) {
+							if (td.nodeType === Node.ELEMENT_NODE) {
+								tdArr.push(td.dataset);
+							}
+						}
+
+						let merged = Object.assign({}, ...tdArr);
+
+						let itemId = merged.id;
+						let price = merged.price;
+						let quantity = input.value;
+						total += price * quantity;
+						document.getElementById('totalPrice').textContent = total;
+
+						html +=
+							`
 						<input type="hidden" name="orders[${idx}].itemId" value="${itemId}" />
 						<input type="hidden" name="orders[${idx}].quantity" value="${quantity}" />
 						`;
-				}
+					}
+					console.log(html);
 
+				}
+			});
+
+			let orderBtn = document.getElementById('orderBtn');
+			orderBtn.addEventListener('click', function () {
+				let form = document.createElement("form");
+				form.action = '/order';
+				form.method = 'post';
 				let name = document.getElementById('name').value;
 				let phone = document.getElementById('phone').value;
 				html += `
 				<input type="hidden" name="name" value="${name}" />
 				<input type="hidden" name="phone" value="${phone}" />
 				`;
+				form.innerHTML = html;
 
-				console.log(html);
+				let body = document.getElementsByTagName("body")[0];
+				body.appendChild(form);
+				form.submit();
+				body.removeChild(form);
+			}, false);
 
-			}
-		});
-
-		let orderBtn = document.getElementById('orderBtn');
-		orderBtn.addEventListener('click', function () {
-			form.action = '/order';
-			form.method = 'post';
-			form.innerHTML = html;
-
-			let body = document.getElementsByTagName("body")[0];
-			body.appendChild(form);
-			form.submit();
-			// body.removeChild(form);
-		}, false);
+		}, false); // DOMContentLoaded
 
 	</script>
 </body>
