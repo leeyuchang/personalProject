@@ -8,7 +8,6 @@
 	<title>テイクアウト注文</title>
 </head>
 
-
 <body>
 	<div>
 		<label for="name">
@@ -74,9 +73,8 @@
 					let tdArr = [];
 					html = '';
 
-					for (let idx = 0; idx < inputArr.length; idx++) {
-						let input = inputArr[idx];
-						let tr = input.parentNode.closest('tr');
+					inputArr.forEach((input, index) => {
+						let tr = input.closest('tr');
 						let tds = tr.childNodes;
 
 						for (td of tds) {
@@ -86,21 +84,17 @@
 						}
 
 						let merged = Object.assign({}, ...tdArr);
-
-						let itemId = merged.id;
-						let price = merged.price;
+						let {itemId, price}  = merged;
 						let quantity = input.value;
 						total += price * quantity;
 						document.getElementById('totalPrice').textContent = total;
 
 						html +=
 							`
-						<input type="hidden" name="orders[${idx}].itemId" value="${itemId}" />
-						<input type="hidden" name="orders[${idx}].quantity" value="${quantity}" />
-						`;
-					}
-					console.log(html);
-
+							<input type="hidden" name="orders[${index}].itemId" value="${itemId}" />
+							<input type="hidden" name="orders[${index}].quantity" value="${quantity}" />
+							`;
+					});
 				}
 			});
 
